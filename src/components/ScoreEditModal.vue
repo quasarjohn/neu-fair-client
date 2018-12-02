@@ -8,7 +8,8 @@
         </div>
       </div>
       <div class="col s12 l10">
-        <div class="row">
+        <div class="">
+
           <div class="col s12 l12">
             <h5 style="text-align: left;" class="white-text">{{team.team_name}}</h5>
           </div>
@@ -28,13 +29,7 @@
             <label for="last-name">{{criteria.percentage}}% -- {{criteria.criteria}}</label>
           </div>
 
-          <div class="col s12 l12">
-            <p class="white-text" style="text-align:left">
-              *Enter values from 0 to 100 with 0
-              being the lowest and 100 the highest. The score will
-              automatically be calculated based on its percentage.
-            </p>
-          </div>
+
         </div>
       </div>
     </div>
@@ -46,8 +41,7 @@ import server_urls from "./../server-urls.js";
 export default {
   props: ["team", "edited_scores"],
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
     save() {
@@ -79,7 +73,6 @@ export default {
         for (let i = keys.length - 1; i >= 0; i--) {
           r[keys[i]][0].focus();
         }
-
       }),
         1000;
     }

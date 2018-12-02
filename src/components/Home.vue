@@ -11,7 +11,7 @@
 
       <div class="col l2 s12" style="margin-top:20px">
         <div>
-          <a href="#" class="btn" @click="submitScores()">Submit</a>
+          <a href="#" class="btn blue" @click="submitScores()">Submit</a>
         </div>
       </div>
     </div>
@@ -48,9 +48,14 @@
         </div>
       </div>
     </div>
-    <score-edit-modal v-bind:team="selected_team" 
-    v-bind:edited_scores="edited_scores"
-    @scoreSaved="onScoreSaved($event)"/>
+    <score-edit-modal
+      v-bind:team="selected_team"
+      v-bind:edited_scores="edited_scores"
+      @scoreSaved="onScoreSaved($event)"
+    />
+    <confirmation-modal v-bind:message="submit_confirmation_message" @confirm="onConfirm($event)"/>
+    <success-modal/>
+    <rankings-modal/>
   </div>
 </template>
 <script>
@@ -61,7 +66,9 @@ export default {
     return {
       teams_list: [],
       selected_team: {},
-      edited_scores: {}
+      edited_scores: {},
+      submit_confirmation_message:
+        "Are you sure you want to submit these scores?"
     };
   },
   mounted() {
@@ -85,12 +92,12 @@ export default {
         for (let team of result.data) {
           axios
             .get(
-              `${server_urls.team_score_per_criteria}/${team.team_name}/${
-                judge_num
-              }`
+              `${server_urls.team_score_per_criteria}/${
+                team.team_name
+              }/${judge_num}`
             )
             .then(result => {
-              this.edited_scores[team.team_name] = result.data
+              this.edited_scores[team.team_name] = result.data;
             });
         }
       });
@@ -105,23 +112,45 @@ export default {
         new_total_score += parseInt(criteria.score);
       }
 
-      this.selected_team.score = new_total_score;
+      if (isNaN(new_total_score)) {
+        this.selected_team.score = null;
+      } else {
+        this.selected_team.score = new_total_score;
+      }
 
       $("#score-edit-modal").modal("close");
     },
-    submitScores() {
-      for (let team in this.edited_scores) {
-        for (let criteria of this.edited_scores[team]) {
-          criteria.score = parseInt(criteria.score);
-          console.log(criteria);
+    onConfirm(confirmed) {
+      $("#confirmation-modal").modal("close");
 
-          axios
-            .put(server_urls.scores, JSON.parse(JSON.stringify(criteria)))
-            .then(result => {
-              console.log(result);
-            });
+      if (confirmed) {
+        //save the scores to the database
+        for (let team in this.edited_scores) {
+          for (let criteria of this.edited_scores[team]) {
+            criteria.score = parseInt(criteria.score);
+
+            axios
+              .put(server_urls.scores, JSON.parse(JSON.stringify(criteria)))
+              .then(result => {});
+          }
+        }
+        $("#rankings-modal").modal("open");
+      }
+    },
+    submitScores() {
+      for (let key in this.edited_scores) {
+        let criteria = this.edited_scores[key];
+
+        for (let score of criteria) {
+          if (score.score === null) {
+            Materialize.toast("Please give score to every team.", 1000);
+            $("#confirmation-modal").modal("close");
+
+            return;
+          }
         }
       }
+      $("#confirmation-modal").modal("open");
     }
   }
 };
