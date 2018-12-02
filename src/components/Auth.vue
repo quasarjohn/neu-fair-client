@@ -1,53 +1,51 @@
 <template>
-  <div class="center-align">
-    <div class="row" style="justify-content: center">
-      <div class="col s0 m3"></div>
-      <div class="col s12 m6">
-        <div class="card" style="background-color:#262626">
-          <div class="card-content white-text">
-            <img src="./../assets/neu_logo.png" width="180" height="180">
-            <h3 class="white-text font-light">NEU Float Parade
-              <br>Scoring System
-            </h3>
+  <div class="row">
+    <div class="col s0 m3"></div>
+    <div class="col s12 m6">
+      <div class="card grey darken-3">
+        <div class="card-content white-text">
+          <img src="./../assets/neu_logo.png" width="180" height="180">
+          <h3 class="white-text font-light">NEU Float Parade
+            <br>Scoring System
+          </h3>
 
-            <form>
-              <div class="row">
-                <div class="col s0 l3"></div>
-                <div class="col s12 l6 input-field">
-                  <input
-                    type="text"
-                    ref="first_name"
-                    name="first-name"
-                    class="validate"
-                    v-model="first_name"
-                  >
-                  <label for="first-name">First Name</label>
-                </div>
-                <div class="col s0 l3"></div>
+          <form>
+            <div class="row">
+              <div class="col s0 l3"></div>
+              <div class="col s12 l6 input-field">
+                <input
+                  type="text"
+                  ref="first_name"
+                  name="first-name"
+                  class="validate"
+                  v-model="first_name"
+                >
+                <label for="first-name">First Name</label>
               </div>
-              <div class="row">
-                <div class="col s0 l3"></div>
-                <div class="col s12 l6 input-field">
-                  <input
-                    type="password"
-                    ref="last_name"
-                    name="last-name"
-                    class="validate"
-                    v-model="last_name"
-                  >
-                  <label for="last-name">Last Name</label>
-                </div>
-                <div class="col s0 l3"></div>
+              <div class="col s0 l3"></div>
+            </div>
+            <div class="row">
+              <div class="col s0 l3"></div>
+              <div class="col s12 l6 input-field">
+                <input
+                  type="password"
+                  ref="last_name"
+                  name="last-name"
+                  class="validate"
+                  v-model="last_name"
+                >
+                <label for="last-name">Last Name</label>
               </div>
-            </form>
+              <div class="col s0 l3"></div>
+            </div>
+          </form>
 
-            <a
-              href="#!"
-              class="waves-effect waves-light btn-large blue"
-              id="btnLogin"
-              @click="login()"
-            >Login</a>
-          </div>
+          <a
+            href="#!"
+            class="waves-effect waves-light btn-large blue"
+            id="btnLogin"
+            @click="login()"
+          >Login</a>
         </div>
       </div>
     </div>
@@ -82,7 +80,15 @@ export default {
           }
         });
     }
+  },
+  mounted() {
+    this.$refs.last_name.focus();
+    this.$refs.first_name.focus();
   }
 };
 </script>
+
+<style>
+</style>
+
 

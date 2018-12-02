@@ -11,13 +11,19 @@
 
       <div class="col l2 s12" style="margin-top:20px">
         <div>
-          <a href="#" class="btn">Submit</a>
+          <a href="#" class="btn" @click="submitScores()">Submit</a>
         </div>
       </div>
     </div>
 
     <div class="container row team-placeholder">
-      <div class="col s12 l4" v-for="score in scores_list">
+      <div
+        class="col s12 l4"
+        v-for="team in teams_list"
+        v-bind="teams_list"
+        :key="team.team_name"
+        @click="onTeamClicked(team)"
+      >
         <div style="height: 80px;" class="card grey darken-3 waves-block waves-effect">
           <a href="#">
             <div class="col l2 s2">
@@ -28,20 +34,23 @@
                 <div class="middle">
                   <div class="inner">
                     <div style="line-height:17px; margin-left:10px">
-                      <p class="title white-text upper" style="line-height:5px;">{{score.team_name}}</p>
-                      <p class="white-text">College of {{score.college}}</p>
+                      <p class="title white-text upper" style="line-height:5px;">{{team.team_name}}</p>
+                      <p class="white-text">College of {{team.college}}</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="col s1 l1 white-text" style="margin-top:14px;">
-              <h5>{{score.score}}</h5>
+              <h5 class="font-med">{{team.score}}</h5>
             </div>
           </a>
         </div>
       </div>
     </div>
+    <score-edit-modal v-bind:team="selected_team" 
+    v-bind:edited_scores="edited_scores"
+    @scoreSaved="onScoreSaved($event)"/>
   </div>
 </template>
 <script>
@@ -50,7 +59,9 @@ import server_urls from "./../server-urls.js";
 export default {
   data() {
     return {
-      scores_list: []
+      teams_list: [],
+      selected_team: {},
+      edited_scores: {}
     };
   },
   mounted() {
@@ -70,46 +81,52 @@ export default {
     //gets list of teams with their total score
     getTeamsList(judge_num) {
       axios.get(server_urls.judge_score + `/${judge_num}`).then(result => {
-        this.scores_list = result.data;
+        this.teams_list = result.data;
+        for (let team of result.data) {
+          axios
+            .get(
+              `${server_urls.team_score_per_criteria}/${team.team_name}/${
+                judge_num
+              }`
+            )
+            .then(result => {
+              this.edited_scores[team.team_name] = result.data
+            });
+        }
       });
     },
+    onTeamClicked(team) {
+      this.selected_team = team;
+      $("#score-edit-modal").modal("open");
+    },
+    onScoreSaved(team_name) {
+      let new_total_score = 0;
+      for (let criteria of this.edited_scores[team_name]) {
+        new_total_score += parseInt(criteria.score);
+      }
+
+      this.selected_team.score = new_total_score;
+
+      $("#score-edit-modal").modal("close");
+    },
+    submitScores() {
+      for (let team in this.edited_scores) {
+        for (let criteria of this.edited_scores[team]) {
+          criteria.score = parseInt(criteria.score);
+          console.log(criteria);
+
+          axios
+            .put(server_urls.scores, JSON.parse(JSON.stringify(criteria)))
+            .then(result => {
+              console.log(result);
+            });
+        }
+      }
+    }
   }
 };
 </script>
 <style>
-.title {
-  font-size: 15px;
-}
-.upper {
-  text-transform: uppercase;
-}
-
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.outer {
-  display: table;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.middle {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.inner {
-  margin-left: auto;
-  margin-right: auto;
-  /*whatever width you want*/
-}
 </style>
 
 
