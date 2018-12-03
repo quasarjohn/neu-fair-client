@@ -5,4 +5,8 @@ export default {
     login: `${root}/login`, 
     //param: judge_num
     judge_score: `${root}/api/judges/scores`, 
+    //params: team_name/judge_num
+    team_score_per_criteria: `${root}/api/scores`, 
+    scores: `${root}/api/scores`,
+    rankings: `${root}/api/rankings`
 }

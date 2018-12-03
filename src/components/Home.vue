@@ -80,13 +80,15 @@ export default {
         this.$router.go("/auth");
       } else {
         //good to go
-        this.getTeamsList();
+        console.log('shit')
+        this.getTeamsList(judge_num);
       }
     });
   },
   methods: {
     //gets list of teams with their total score
     getTeamsList(judge_num) {
+      console.log(server_urls.judge_score + `/${judge_num}`)
       axios.get(server_urls.judge_score + `/${judge_num}`).then(result => {
         this.teams_list = result.data;
         for (let team of result.data) {

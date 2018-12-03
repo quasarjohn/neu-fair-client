@@ -42,7 +42,6 @@ export default {
     setInterval(() => {
       axios.get(server_urls.rankings).then(result => {
         this.rankings = result.data;
-        console.log(result.data);
       });
       //request updated rankings every 5 seconds
     }, 1000);

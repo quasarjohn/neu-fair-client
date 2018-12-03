@@ -6,6 +6,18 @@ import Auth from './components/Auth.vue'
 import axios from 'axios'
 import server_urls from './server-urls'
 
+import ScoreEditModal from './components/ScoreEditModal.vue'
+Vue.component('score-edit-modal', ScoreEditModal);
+
+import ConfirmationModal from './components/ConfirmationModal.vue'
+Vue.component('confirmation-modal', ConfirmationModal);
+
+import SuccessModal from './components/SuccessDialog.vue'
+Vue.component('success-modal', SuccessModal);
+
+import Rankings from './components/Rankings.vue'
+Vue.component('rankings-modal', Rankings);
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({
