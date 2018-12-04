@@ -54,7 +54,7 @@
       @scoreSaved="onScoreSaved($event)"
     />
     <confirmation-modal v-bind:message="submit_confirmation_message" @confirm="onConfirm($event)"/>
-    <success-modal/>
+    <success-modal @viewRankings="onViewRankings()"/>
     <rankings-modal/>
   </div>
 </template>
@@ -68,7 +68,8 @@ export default {
       selected_team: {},
       edited_scores: {},
       submit_confirmation_message:
-        "Are you sure you want to submit these scores?"
+        "Are you sure you want to submit these scores?",
+      show_rankings: true
     };
   },
   mounted() {
@@ -80,7 +81,6 @@ export default {
         this.$router.go("/auth");
       } else {
         //good to go
-        console.log('shit')
         this.getTeamsList(judge_num);
       }
     });
@@ -88,7 +88,6 @@ export default {
   methods: {
     //gets list of teams with their total score
     getTeamsList(judge_num) {
-      console.log(server_urls.judge_score + `/${judge_num}`)
       axios.get(server_urls.judge_score + `/${judge_num}`).then(result => {
         this.teams_list = result.data;
         for (let team of result.data) {
@@ -100,6 +99,20 @@ export default {
             )
             .then(result => {
               this.edited_scores[team.team_name] = result.data;
+
+              //check if the field contain any null value
+              //if there are, do not show the rankings yet
+
+              for (let team of result.data) {
+                if (team.score === null) {
+                  this.show_rankings = false;
+                  break;
+                }
+              }
+
+              if (this.show_rankings) {
+                this.modal("#rankings-modal", "open", false);
+              }
             });
         }
       });
@@ -111,7 +124,7 @@ export default {
     onScoreSaved(team_name) {
       let new_total_score = 0;
       for (let criteria of this.edited_scores[team_name]) {
-        new_total_score += parseInt(criteria.score);
+        new_total_score += parseFloat(criteria.score);
       }
 
       if (isNaN(new_total_score)) {
@@ -136,8 +149,14 @@ export default {
               .then(result => {});
           }
         }
-        $("#rankings-modal").modal("open");
+
+        this.modal("#success-modal", "open", false);
       }
+    },
+    onViewRankings() {
+      console.log("shit");
+      this.modal("#success-modal", "close", false);
+      this.modal("#rankings-modal", "open", false);
     },
     submitScores() {
       for (let key in this.edited_scores) {
@@ -146,13 +165,17 @@ export default {
         for (let score of criteria) {
           if (score.score === null) {
             Materialize.toast("Please give score to every team.", 1000);
-            $("#confirmation-modal").modal("close");
+            this.modal("#confirmation-modal", "close", false);
 
             return;
           }
         }
       }
-      $("#confirmation-modal").modal("open");
+      this.modal("#confirmation-modal", "open", false);
+    },
+    modal(id, action, dismissible) {
+      $(id).modal()[0].M_Modal.options.dismissible = dismissible;
+      $(id).modal(action);
     }
   }
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="modal grey darken-3" id="rankings-modal">
     <div class="modal-content">
-      <h3 class="white-text font-light left-align">Current Ranking</h3>
+      <h3 class="white-text font-light left-align">Rankings</h3>
 
       <table class="white-text">
         <thead>
@@ -24,7 +24,8 @@
       <p
         style="margin-top: 40px"
         class="white-text left-align"
-      >*Average score is the total point of the participant divided by the total number of judges.</p>
+      >*Average score is the total point of the participant 
+      divided by the total number of judges who have submitted scores.</p>
     </div>
   </div>
 </template>

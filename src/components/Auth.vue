@@ -19,6 +19,7 @@
                   name="first-name"
                   class="validate"
                   v-model="first_name"
+                  @keyup="onKeyUp($event)"
                 >
                 <label for="first-name">First Name</label>
               </div>
@@ -33,6 +34,7 @@
                   name="last-name"
                   class="validate"
                   v-model="last_name"
+                  @keyup="onKeyUp($event)"
                 >
                 <label for="last-name">Last Name</label>
               </div>
@@ -79,6 +81,11 @@ export default {
             this.$router.go("/");
           }
         });
+    },
+    onKeyUp(key) {
+      if (key.code == "Enter") {
+        this.login()
+      }
     }
   },
   mounted() {

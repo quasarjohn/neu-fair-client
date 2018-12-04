@@ -12,7 +12,7 @@ Vue.component('score-edit-modal', ScoreEditModal);
 import ConfirmationModal from './components/ConfirmationModal.vue'
 Vue.component('confirmation-modal', ConfirmationModal);
 
-import SuccessModal from './components/SuccessDialog.vue'
+import SuccessModal from './components/SuccessModal.vue'
 Vue.component('success-modal', SuccessModal);
 
 import Rankings from './components/Rankings.vue'
