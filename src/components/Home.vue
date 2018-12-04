@@ -27,7 +27,13 @@
         <div style="height: 80px;" class="card grey darken-3 waves-block waves-effect">
           <a href="#">
             <div class="col l2 s2">
-              <img src="./../assets/neu_logo.png" width="50" height="50" style="margin-top: 14px">
+              <img
+                :src="getLogoPath(team.logo)"
+                :alt="getLogoPath('neu_logo.png')"
+                width="50"
+                height="50"
+                style="margin-top: 14px"
+              >
             </div>
             <div class="col l8 s8">
               <div class="outer">
@@ -86,6 +92,9 @@ export default {
     });
   },
   methods: {
+    getLogoPath(logo) {
+      return require(`./../assets/${logo}`);
+    },
     //gets list of teams with their total score
     getTeamsList(judge_num) {
       axios.get(server_urls.judge_score + `/${judge_num}`).then(result => {
@@ -154,7 +163,6 @@ export default {
       }
     },
     onViewRankings() {
-      console.log("shit");
       this.modal("#success-modal", "close", false);
       this.modal("#rankings-modal", "open", false);
     },
