@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     save() {
+      this.total_score = ''
       this.$emit("scoreSaved", this.team.team_name);
     },
     validateScore(percentage, score, ref) {
