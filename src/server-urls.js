@@ -8,5 +8,6 @@ export default {
     //params: team_name/judge_num
     team_score_per_criteria: `${root}/api/scores`, 
     scores: `${root}/api/scores`,
-    rankings: `${root}/api/rankings`
+    rankings: `${root}/api/rankings`, 
+    total_votes: `${root}/api/judges/votes`
 }
