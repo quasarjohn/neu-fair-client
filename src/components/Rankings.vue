@@ -6,9 +6,12 @@
           <h4 class="white-text font-light left-align">Rankings</h4>
         </div>
         <div class="col s6 l6">
-          <a href="#" v-bind:style="btn_style" 
-          @click="onTieBreakerClick($event)"
-          class="right btn blue waves-effect">Tie Breaker</a>
+          <a
+            href="#"
+            v-bind:style="btn_style"
+            @click="onTieBreakerClick($event)"
+            class="right btn blue waves-effect"
+          >Tie Breaker</a>
         </div>
         <div class="col s12 l12">
           <p class="white-text left">{{status}}</p>
@@ -64,6 +67,7 @@ export default {
           //check if there is a tie then proceed to tie breaker
           let r = 0;
           for (let team of this.rankings) {
+            //only check for ties in 3rd spot or higher
             if (r == team.ranking) {
               //there are duplicate rankings
               //show the hidden tie breaker button
@@ -73,16 +77,15 @@ export default {
               r = team.ranking;
             }
           }
-        } else {
-          this.status = `${voted_judges} / ${total_judges} judges voted.`;
         }
+        this.status = `${voted_judges} / ${total_judges} judges voted.`;
       });
       //request updated rankings every 5 seconds
     }, 1000);
   },
   methods: {
     onTieBreakerClick() {
-      this.$router.go('/tiebreaker');
+      this.$router.push("/tiebreaker");
     }
   }
 };

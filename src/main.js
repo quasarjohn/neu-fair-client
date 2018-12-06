@@ -18,6 +18,9 @@ Vue.component('success-modal', SuccessModal);
 import Rankings from './components/Rankings.vue'
 Vue.component('rankings-modal', Rankings);
 
+import Header from './components/Header.vue'
+Vue.component('app-header', Header);
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({

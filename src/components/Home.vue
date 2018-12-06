@@ -1,20 +1,7 @@
 <template>
   <div>
-    <div class="row" style="padding-top:20px;">
-      <div class="col l2 s4">
-        <img src="./../assets/neu_logo.png" width="100" height="100">
-      </div>
-
-      <div class="col l8 s8" style="text-align:left">
-        <h3 class="font-light white-text">NEU Float Parade</h3>
-      </div>
-
-      <div class="col l2 s12" style="margin-top:20px">
-        <div>
-          <a href="#" class="btn blue" @click="submitScores()">Submit</a>
-        </div>
-      </div>
-    </div>
+    
+    <app-header v-bind:function_label="function_label" @headerBtnClick="submitScores()"/>
 
     <div class="container row team-placeholder">
       <div
@@ -75,7 +62,8 @@ export default {
       edited_scores: {},
       submit_confirmation_message:
         "Are you sure you want to submit these scores?",
-      show_rankings: true
+      show_rankings: true, 
+      function_label: 'Submit'
     };
   },
   mounted() {
@@ -84,7 +72,7 @@ export default {
       //just a validation, if session expired, return to auth
       let { judge_num } = result.data;
       if (isNaN(judge_num)) {
-        this.$router.go("/auth");
+        this.$router.push("/auth");
       } else {
         //good to go
         this.getTeamsList(judge_num);
@@ -120,6 +108,18 @@ export default {
               }
 
               if (this.show_rankings) {
+                //check if there are ties, if there are, redirect to the tiebreaker page
+                // axios.get(server_urls.tie_count).then(result => {
+                //   console.log(result.data)
+                //   for(let ranking of result.data) {
+                //       if(ranking.team_count > 1) {
+                //         this.$router.push("/tiebreaker");
+                //         break;
+                //       }
+                //   }
+                // });
+
+                //show ranking
                 this.modal("#rankings-modal", "open", false);
               }
             });
