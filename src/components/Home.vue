@@ -1,11 +1,14 @@
 <template>
   <div>
     
-    <app-header v-bind:function_label="function_label" @headerBtnClick="submitScores()"/>
+    <app-header 
+    v-bind:function_label="function_label" 
+    v-bind:title="title"
+    @headerBtnClick="submitScores()"/>
 
     <div class="container row team-placeholder">
       <div
-        class="col s12 l4"
+        class="col s12 l4 pointer"
         v-for="team in teams_list"
         v-bind="teams_list"
         :key="team.team_name"
@@ -48,7 +51,7 @@
     />
     <confirmation-modal v-bind:message="submit_confirmation_message" @confirm="onConfirm($event)"/>
     <success-modal @viewRankings="onViewRankings()"/>
-    <rankings-modal/>
+    <rankings-modal v-bind:session_data="session_data"/>
   </div>
 </template>
 <script>
@@ -63,12 +66,15 @@ export default {
       submit_confirmation_message:
         "Are you sure you want to submit these scores?",
       show_rankings: true, 
-      function_label: 'Submit'
+      function_label: 'Submit', 
+      title: 'NEU Float Parade',
+      session_data: {}
     };
   },
   mounted() {
     //get session data
     axios.get(server_urls.root, { withCredentials: true }).then(result => {
+      this.session_data = result.data;
       //just a validation, if session expired, return to auth
       let { judge_num } = result.data;
       if (isNaN(judge_num)) {
@@ -108,17 +114,6 @@ export default {
               }
 
               if (this.show_rankings) {
-                //check if there are ties, if there are, redirect to the tiebreaker page
-                // axios.get(server_urls.tie_count).then(result => {
-                //   console.log(result.data)
-                //   for(let ranking of result.data) {
-                //       if(ranking.team_count > 1) {
-                //         this.$router.push("/tiebreaker");
-                //         break;
-                //       }
-                //   }
-                // });
-
                 //show ranking
                 this.modal("#rankings-modal", "open", false);
               }

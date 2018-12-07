@@ -22,7 +22,9 @@
         <thead>
           <tr>
             <th>Team Name</th>
+            <th>College</th>
             <th>Average Score</th>
+            <th :style="col_style">Tie Breaker Vote</th>
             <th>Rank</th>
           </tr>
         </thead>
@@ -30,7 +32,9 @@
         <tbody>
           <tr v-for="team in rankings" v-bind:key="team.team_name">
             <td>{{team.team_name}}</td>
+            <td>{{team.college}}</td>
             <td>{{team.average_score}}</td>
+            <td :style="col_style">{{team.tie_breaker_vote}}</td>
             <td>{{team.ranking}}</td>
           </tr>
         </tbody>
@@ -47,20 +51,25 @@
 import axios from "axios";
 import server_urls from "./../server-urls.js";
 export default {
-  props: ["trigger"],
+  props: ["trigger", "session_data"],
   data() {
     return {
       rankings: [],
       status: "",
-      btn_style: "visibility:hidden"
+      btn_style: "visibility:hidden",
+      include_tie_breaker: "false",
+      col_style: "display:none"
     };
   },
   mounted() {
     setInterval(() => {
-      axios.get(server_urls.rankings).then(result => {
-        this.rankings = result.data;
-      });
+      axios
+        .get(server_urls.rankings + `?tiebreaker=${this.include_tie_breaker}`)
+        .then(result => {
+          this.rankings = result.data;
+        });
 
+      //check if all judges have made submitted a score
       axios.get(server_urls.total_votes).then(result => {
         let { total_judges, voted_judges } = result.data;
         if (total_judges === voted_judges) {
@@ -70,9 +79,29 @@ export default {
             //only check for ties in 3rd spot or higher
             if (r == team.ranking) {
               //there are duplicate rankings
-              //show the hidden tie breaker button
-              this.btn_style = "";
-              break;
+
+              //check if the judge has already submitted
+              axios
+                .get(
+                  `${server_urls.total_tie_breaker_votes}/${
+                    this.session_data.judge_num
+                  }`
+                )
+                .then(result => {
+                  console.log(result);
+                  let { total_judges, voted_judges, voted } = result.data;
+
+                  if (voted_judges > 0) {
+                    this.col_style = "";
+                  }
+
+                  //not all judges have voted
+                  if (voted == false) {
+                    this.btn_style = "";
+                  } else if (total_judges == voted_judges) {
+                    this.include_tie_breaker = "true";
+                  }
+                });
             } else {
               r = team.ranking;
             }
@@ -85,6 +114,7 @@ export default {
   },
   methods: {
     onTieBreakerClick() {
+      $(`#rankings-modal`).modal("close");
       this.$router.push("/tiebreaker");
     }
   }

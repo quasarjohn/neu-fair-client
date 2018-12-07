@@ -76,6 +76,8 @@ body {
   width: 50%;
 }
 
-
+.pointer {
+  cursor: pointer;
+}
 
 </style>

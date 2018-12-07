@@ -6,7 +6,7 @@
       </div>
 
       <div class="col l8 s8" style="text-align:left">
-        <h3 class="font-light white-text">NEU Float Parade</h3>
+        <h3 class="font-light white-text">{{title}}</h3>
       </div>
 
       <div class="col l2 s12" style="margin-top:20px">
@@ -21,10 +21,9 @@
 export default {
     data() {
         return {
-            title: 'NEU Float Parade'
         }
     }, 
-    props: ['function_label'], 
+    props: ['function_label', 'title'], 
     methods: {
         onHeaderBtnClick() {
             this.$emit('headerBtnClick')
